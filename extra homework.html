@@ -1,0 +1,263 @@
+<head>
+<title>game</title>
+</head>
+</canvas>
+<body>
+<canvas id="canvas" width=800 height=700></canvas>
+<style type="text/css">body {padding: 60px;}</style>
+<script> 
+const turn=true;
+
+const tictactoe = function(isX){
+const board = [
+    [' ', ' ', ' '],
+    [' ', ' ', ' '],
+    [' ', ' ', ' ']
+     ];
+const forEach = function(arr, func) {
+    const helper = function(index) {
+          if(index === arr.length){
+              return;
+          }
+          func(arr[index]);   
+          helper(index+1);    
+          }
+        helper(0);
+      }
+const ximg = new Image();
+ximg.src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcjU2vl-OnFoGC75aujfMaLpccD-pEEzY43LIMCOMMhLjDxMJG";
+const oimg = new Image();
+oimg.src = "https://media.istockphoto.com/vectors/letter-volume-colorful-icon-with-splash-vector-id481392504?s=2048x2048";
+var canvas=document.getElementById("canvas");
+var ctx=canvas.getContext("2d");
+var BB,BBoffsetX,BBoffsetY;
+const rect=[
+     {x:10,y:0,w:180,h:180,index:[0,0]},
+     {x:250,y:0,w:180,h:180,index:[0,1]},
+     {x:500,y:0,w:180,h:180,index:[0,2]},
+     {x:10,y:230,w:180,h:180,index:[1,0]},
+     {x:250,y:230,w:180,h:180,index:[1,1]},
+     {x:500,y:230,w:180,h:180,index:[1,2]},
+     {x:10,y:460,w:180,h:180,index:[2,0]},
+     {x:250,y:460,w:180,h:180,index:[2,1]},
+     {x:500,y:460,w:180,h:180,index:[2,2]}, 
+           ];
+const draw=function(){
+ forEach(rect, function(rect){
+  ctx.fillStyle="LightSkyBlue"
+  ctx.fillRect(rect.x,rect.y,rect.w,rect.h);})
+ }
+ draw();
+const NextMove = function(board,isX) {
+  const rand = function(num) {
+    return Math.floor(Math.random() * num);
+    }
+
+  const trying = function(s){
+    if(s!== " ")
+      return false;
+    return true;
+   }
+  let a = rand(3);
+  let b = rand(3);
+
+  //horizontally
+  for(let i1 = 0; i1 < 3; i1++){
+      if(board[i1][0] === board[i1][1] && board[i1][0]!==" "){
+          if(trying(board[i1][2])){
+            a= i1;
+            b= 2;
+          }
+        }
+      if(board[i1][1] === board[i1][2] && board[i1][1]!==" "){
+          if(trying(board[i1][0])){
+            a= i1;
+            b= 0;
+          }
+        }
+      if(board[i1][0] === board[i1][2] && board[i1][0]!==" "){
+          if(trying(board[i1][1])){
+            a= i1;
+            b= 1;
+          }
+        }
+     }
+  //vertically
+  for(let i2 = 0; i2 < 3; i2++ ){
+        if(board[0][i2] === board[1][i2] && board[0][i2]!==" "){
+          if(trying(board[2][i2])){
+            a= 2;
+            b= i2;
+          }
+        }
+        if(board[1][i2] === board[2][i2] && board[1][i2]!==" "){
+          if(trying(board[0][i2])){
+            a= 0;
+            b= i2;
+          }
+        }
+        if(board[0][i2] === board[2][i2] && board[0][i2]!==" "){
+          if(trying(board[1][i2])){
+            a= 1;
+            b= i2;
+          }
+        }
+     }
+ //diagonally
+  if(board[0][0] === board[1][1] && board[0][0]!==" "){
+          if(trying(board[2][2])){
+            a= 2;
+            b= 2;
+          }
+        }
+  else if(board[0][0] === board[2][2] && board[0][0]!==" "){
+          if(trying(board[1][1])){
+            a= 1;
+            b= 1;
+          }
+        }
+  else if(board[1][1] === board[2][2] && board[1][1]!==" "){
+          if(trying(board[0][0])){
+            a= 0;
+            b= 0;
+          }
+        }
+  else if(board[0][2] === board[1][1] && board[0][2]!==" "){
+          if(trying(board[2][0])){
+            a= 2;
+            b= 0;
+          }
+        }
+  else if(board[0][2] === board[2][0] && board[0][2]!==" "){
+          if(trying(board[1][1])){
+            a= 1;
+            b= 1;
+          }
+        }
+  else if(board[1][1] === board[2][0] && board[1][1]!==" "){
+          if(trying(board[0][2])){
+            a= 0;
+            b= 2;
+          }
+        }  
+ while(!trying(board[a][b])){
+    a = rand(3);
+    b = rand(3);
+    }
+    return [a,b]
+   }
+const makeMove = function(board,location,isX){
+  let str = "o";
+  if(isX) {
+    str = "x";
+  }
+  if(board[location[0]][location[1]] !== ' '){
+    return -1;
+   }
+  else{
+    board[location[0]][location[1]] = str;
+    forEach(rect, function(rect){
+      if(rect.index[0]===location[0] && rect.index[1]===location[1]){
+        if(isX){
+         ctx.drawImage(ximg, rect.x+10, rect.y+10, 160, 160);
+        }else{
+         ctx.drawImage(oimg, rect.x+10, rect.y+10, 160, 160);
+        }
+       } 
+        })
+    return 0;
+  }
+ }
+const gameData = {
+  winner: 'none'
+  }
+const findWinner = function(board){
+  for (let i1 = 0; i1 < board.length; i1++) {
+        if(board[i1][0] === board[i1][1] && board[i1][1] === board[i1][2] && board[i1][0] !== ' '){
+         gameData.winner = board[i1][0];
+         gameData.winninglocations= [[i1, 0], [i1, 1], [i1, 2]];
+         return gameData;
+        }
+      }
+  const i1 = 0;
+  for (let i2 = 0; i2 < board[i1].length; i2++) {
+        if(board[i1][i2] === board[i1+1][i2] && board[i1+1][i2] === board[i1+2][i2] && board[i1][i2] !== ' '){
+          gameData.winner=board[i1][i2];
+          gameData.winninglocations= [[i1, i2], [i1+1, i2], [i1+2, i2]];
+          return gameData;
+      } 
+    }
+  const tie = function(){
+      for(let i1 = 0; i1 < 3; i1++)
+        for(let i2 = 0; i2 < 3; i2++ )
+          if(board[i1][i2] === ' ')
+              return false;
+        return true;
+    }
+  if(board[0][0]===board[1][1] && board[1][1]===board[2][2] && board[0][0] !== ' '){
+    gameData.winner = board[0][0];
+    gameData.winninglocations= [[0, 0], [1, 1], [2, 2]]; 
+    return gameData;
+    }
+  else if(board[0][2]===board[1][1] && board[1][1]===board[2][0] && board[2][0] !== ' '){
+    gameData.winner = board[0][2];
+    gameData.winninglocations= [[0, 2], [1, 1], [2, 0]] 
+    return gameData;
+    }
+  if(tie()){
+    gameData.winner="tie";
+    return gameData;
+  }
+ }
+const checkforwinner = function(){
+  findWinner(board);
+  while(gameData.winner==="tie"){
+    alert("tie");
+    return true;
+    }
+  if(gameData.winner !== "none"){
+    alert(gameData.winner+" is the winner");
+    return true;
+    }   
+   }
+const loop = function(isX){
+   const loc = NextMove(board);
+   const move = makeMove(board,loc,isX);
+   }
+ if(!isX){
+   loop(!isX);
+ } 
+ canvas.onmousedown=handleMousedown;
+  function handleMousedown(e){
+  e.preventDefault();
+  e.stopPropagation();
+  var mx=e.clientX-BBoffsetX;
+  var my=e.clientY-BBoffsetY;
+  forEach(rect, function(rect){
+  if(mx>=rect.x && mx<=rect.x+rect.w && my>=rect.y && my<=rect.y+rect.h){
+    const move = makeMove(board,rect.index,isX);
+    if(move === -1){
+    alert("Invalid move"); 
+    return "";
+    }
+  if(checkforwinner()){
+    return "";
+   }  
+  loop(!isX) 
+  if(checkforwinner()){
+    return "";
+   }  
+  }
+  })   
+  }
+ setBB();
+ function setBB(){
+    BB=canvas.getBoundingClientRect();
+    BBoffsetX=BB.left;
+    BBoffsetY=BB.top;
+   }  
+  }
+tictactoe(turn);
+</script>
+</body>
+</html>

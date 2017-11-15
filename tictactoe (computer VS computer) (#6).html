@@ -1,0 +1,104 @@
+<head>
+<title>game</title>
+</head>
+</canvas>
+<body>
+<script> 
+const turn=true;
+const board = [
+    [' ', ' ', ' '],
+    [' ', ' ', ' '],
+    [' ', ' ', ' ']
+     ];
+const NextMove = function(board) {
+  const rand = function(num) {
+    return Math.floor(Math.random() * num);
+    }
+  const trying = function(s){
+    if(s!== " ")
+      return false;
+    return true;
+   }
+  let a = rand(3);
+  let b = rand(3);
+ while(!trying(board[a][b])){
+    a = rand(3);
+    b = rand(3);
+    }
+    return [a,b];
+  }
+const makeMove = function(board,location,isX){
+  let str = "o";
+  if(isX) {
+    str = "x";
+  }
+  if(board[location[0]][location[1]] !== ' '){
+    return -1;
+   }
+  else{
+    board[location[0]][location[1]] = str;
+    return 0;
+  }
+ }
+const gameData = {
+  winner: 'none'
+  }
+const findWinner = function(board){
+  for (let i1 = 0; i1 < board.length; i1++) {
+        if(board[i1][0] === board[i1][1] && board[i1][1] === board[i1][2] && board[i1][0] !== ' '){
+         gameData.winner = board[i1][0];
+         gameData.winninglocations= [[i1, 0], [i1, 1], [i1, 2]];
+         return gameData;
+        }
+      }
+  const i1 = 0;
+  for (let i2 = 0; i2 < board[i1].length; i2++) {
+        if(board[i1][i2] === board[i1+1][i2] && board[i1+1][i2] === board[i1+2][i2] && board[i1][i2] !== ' '){
+          gameData.winner=board[i1][i2];
+          gameData.winninglocations= [[i1, i2], [i1+1, i2], [i1+2, i2]];
+          return gameData;
+      } 
+    }
+  const tie = function(){
+      for(let i1 = 0; i1 < 3; i1++)
+        for(let i2 = 0; i2 < 3; i2++ )
+          if(board[i1][i2] === ' ')
+              return false;
+        return true;
+    }
+  if(board[0][0]===board[1][1] && board[1][1]===board[2][2] && board[0][0] !== ' '){
+    gameData.winner = board[0][0];
+    gameData.winninglocations= [[0, 0], [1, 1], [2, 2]]; 
+    return gameData;
+    }
+  else if(board[0][2]===board[1][1] && board[1][1]===board[2][0] && board[2][0] !== ' '){
+    gameData.winner = board[0][2];
+    gameData.winninglocations= [[0, 2], [1, 1], [2, 0]] 
+    return gameData;
+    }
+  if(tie()){
+    gameData.winner="tie";
+    return gameData;
+  }
+ }
+const loop = function(isX){
+  findWinner(board);
+  while(gameData.winner==="tie"){
+    alert("tie");
+    return true;
+    }
+  if(gameData.winner !== "none"){
+    alert(gameData.winner+" is the winner");
+    return true;
+    } 
+  const loc = NextMove(board);
+  const move = makeMove(board,loc,isX);
+  while(gameData.winner === "none"){
+    loop(!isX)
+   }
+  }
+  console.log(board);
+  loop(true);
+</script>
+</body>
+</html>
