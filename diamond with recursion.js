@@ -1,4 +1,4 @@
-const diamond = function(number,str){
+const diamond = function(num,str){
   const string = function(n,str){
     if (n <= 0){
       return "";
@@ -37,7 +37,7 @@ if (num%2 !== 0){
   triangleStars(num);
   flipped(num);
   } else {
-  triangleStars(number+1);
+  triangleStars(num+1);
   flipped(num+1);
      }
  }
